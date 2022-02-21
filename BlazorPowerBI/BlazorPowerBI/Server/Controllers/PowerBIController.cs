@@ -9,7 +9,6 @@ using BlazorPowerBI.Shared.ActiveDirectory;
 
 namespace BlazorPowerBI.Server.Controllers
 {
-    //[Authorize]
     [Route("[controller]")]
     [ApiController]
     public class PowerBIController : ControllerBase
