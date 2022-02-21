@@ -4,12 +4,11 @@
 @inject NavigationManager navigationManager
 @inject IBreadcrumbDataItems breadcrumService
 
+<MudThemeProvider/>
 <MudLayout>
     <MudAppBar>
 		<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-		<img src="img/logo_white.svg" height="32" />
         <MudSpacer></MudSpacer>
-        
     </MudAppBar>
      <MudDrawer @bind-Open="@_drawerOpen">
         <NavMenu/>
