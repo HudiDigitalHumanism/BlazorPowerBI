@@ -1,0 +1,27 @@
+using BlazorPowerBI.Client.Shared;
+using BlazorPowerBI.Client.Shared.Abstraction;
+using BlazorPowerBI.Shared.Reports;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using MudBlazor.Services;
+
+namespace BlazorPowerBI.Client
+{
+    public class Program
+    {
+        public static async Task Main(string[] args)
+        {
+            var builder = WebAssemblyHostBuilder.CreateDefault(args);
+            builder.RootComponents.Add<App>("#app");
+
+           
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddMudServices();
+            builder.Services.AddAuthorizationCore();
+
+            builder.Services.AddScoped<ReportConfig>();
+            builder.Services.AddSingleton<IBreadcrumbDataItems, BreadcrumbDataItems>();
+
+            await builder.Build().RunAsync();
+        }
+    }
+}

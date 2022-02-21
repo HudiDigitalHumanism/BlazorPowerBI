@@ -1,0 +1,63 @@
+@page "/reports/show/{ReportName}"
+@attribute [Authorize]
+
+@using System.Collections.Generic
+@using Microsoft.Extensions.Logging
+@using BlazorPowerBI.Shared
+@using BlazorPowerBI.Shared.Reports
+@using BlazorPowerBI.Shared.ActiveDirectory
+@using BlazorPowerBI.Client.Shared.Abstraction
+@inject ILogger<Index> logger
+@inject IBreadcrumbDataItems breadcrumbService
+@inject HttpClient client
+
+@if (Loading)
+{
+    <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+}
+else
+{
+    <ReportComponent ReportOptions="@options" EmbedReportId="@embedReportId">
+    </ReportComponent>
+}
+
+@code{
+    [Parameter]
+    public string ReportName { get; set; }
+    private bool Loading { get; set; }
+
+    private EmbeddedReportParameters options;
+    private string embedReportId;
+    private ReportConfiguration reportData;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Loading = true;
+        try
+        {
+            logger.LogInformation($"OnParametersSetAsync {ReportName}");
+            await FillReportData();
+
+            breadcrumbService.LoadBreadcrumb(new List<BreadcrumbItem>(1) {
+                new BreadcrumbItem("Reports", href: null, disabled: true),
+                new BreadcrumbItem(reportData.ReportDisplayName, href: $"/reports/show/{ReportName}", disabled: false)
+            });
+        }
+        finally
+        {
+            Loading = false;
+        }
+
+    }
+
+	private async Task FillReportData()
+	{
+        reportData = await client.GetFromJsonAsync<ReportConfiguration>($"PowerBI/config/{ReportName}");
+        embedReportId = reportData.ReportId;	
+		options = new EmbeddedReportParameters
+		{
+        	Datasets = new Dataset[] { new Dataset() { Id = reportData.Dataset } },
+        	Reports = new Report[] { new Report() { AllowEdit = false, Id =  embedReportId} }
+		};	
+	}
+}

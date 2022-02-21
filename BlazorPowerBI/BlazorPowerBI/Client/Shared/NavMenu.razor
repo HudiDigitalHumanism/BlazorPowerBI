@@ -1,0 +1,17 @@
+﻿<MudNavMenu>
+    <MudNavLink Href="/" Icon="@Icons.Filled.Home">Home</MudNavLink>
+    <MudNavGroup Title="Reports" Expanded="false" Icon="@Icons.Filled.Report">
+        <MudNavLink Href="/reports/show/supplier-quality-analysis">Supplier Quality Analysis</MudNavLink>
+    </MudNavGroup>
+</MudNavMenu>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

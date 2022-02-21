@@ -1,0 +1,53 @@
+@inject HttpClient Http
+@inject IJSRuntime jsRuntime
+@*@inject IAuthenticationService authService*@
+@inject ILogger<ReportComponent> logger
+@using System.Linq
+@using System.Security.Claims
+@using BlazorPowerBI.Shared.Reports
+@using BlazorPowerBI.Shared.ActiveDirectory
+@using BlazorPowerBI.Shared
+@using Microsoft.Extensions.Logging
+
+<div id="embedContainer" style="height:85vh;margin-top:5px"></div>
+
+@code {
+
+    [Parameter]
+    public EmbeddedReportParameters ReportOptions { get; set; }
+
+    [Parameter]
+    public string EmbedReportId { get; set; }
+
+    private string accessTokenAAD = string.Empty;
+    private string email = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var authResult = await Http.GetFromJsonAsync<AuthApplicationResult>("PowerBI");
+            accessTokenAAD = authResult.AccessToken;
+           
+        }
+        catch(Exception ex)
+        {
+            logger.LogError(ex, "OnInitializedAsync");
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        try
+        {
+            if (!firstRender && !string.IsNullOrEmpty(accessTokenAAD))
+            {
+                await jsRuntime.InvokeVoidAsync("drawBi", accessTokenAAD, EmbedReportId, ReportOptions);
+            }
+        }
+        catch(Exception ex)
+        {
+            logger.LogError(ex, "OnAfterRenderAsync");
+        }
+	}
+}

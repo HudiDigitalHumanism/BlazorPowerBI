@@ -1,0 +1,46 @@
+﻿@using System.Security.Claims
+@using BlazorPowerBI.Client.Shared.Abstraction
+@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
+@inject IBreadcrumbDataItems breadcrumService
+
+<MudLayout>
+    <MudAppBar>
+		<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+		<img src="img/logo_white.svg" height="32" />
+        <MudSpacer></MudSpacer>
+        
+    </MudAppBar>
+     <MudDrawer @bind-Open="@_drawerOpen">
+        <NavMenu/>
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+            <MudBreadcrumbs Items="@BreadcrumbItems" Separator="/"></MudBreadcrumbs>
+            @Body
+		</MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = false;
+    ClaimsPrincipal currentUser { get; set; } = new ClaimsPrincipal(new ClaimsIdentity());
+    List<BreadcrumbItem> BreadcrumbItems { get; set; } = new List<BreadcrumbItem>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        breadcrumService.OnLoad += UpdateBreadcrum;
+        await base.OnInitializedAsync();
+    }
+
+    void UpdateBreadcrum(object sender, EventArgs args)
+    {
+        BreadcrumbItems = (List<BreadcrumbItem>)sender;
+        StateHasChanged();
+    }
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

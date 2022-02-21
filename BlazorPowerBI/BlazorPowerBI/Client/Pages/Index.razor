@@ -1,0 +1,21 @@
+@page "/"
+@attribute [Authorize]
+@inject BlazorPowerBI.Client.Shared.Abstraction.IBreadcrumbDataItems breadcrumbService
+
+<h1>Hello, world!</h1>
+
+Benvenuto in BlazorPowerBI web reporting.
+<br />
+Questa è l'unica pagina pubblica.
+<br />
+Ci vanno le informazioni di contatto.
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        breadcrumbService.LoadBreadcrumb(new List<BreadcrumbItem>(1) {
+            new BreadcrumbItem("Home", href: null, disabled: true)
+        });
+    }
+}
