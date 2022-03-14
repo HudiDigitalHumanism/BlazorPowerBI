@@ -4,7 +4,7 @@ Il progetto consiste in una semplice applicazione Blazor WebAssembly in grado di
 
 ## Architettura
 L'architettura descritta nel diagramma sottostante si prefigge di descrivere il flusso di autenticazione e autorizzazione per accedere ai dati della risorsa del report PowerBI.
-L'utente quando richiede di accedere al report di PowerBI, fa implicitamente una richiesta di accesso a una risorsa e successivamente richiede la risposta stessa.
+L'utente quando richiede di accedere al report di PowerBI, fa implicitamente una richiesta di accesso a una risorsa e successivamente richiede la risorsa stessa.
 L'applicazione Blazor client (WASM), necessita di un token per l'accesso a PowerBI. Fa quindi una richiesta al backend dove si potrà fare una richiesta via **Client Credential** ad Azure Active Directory alla risorsa PowerBI. Una volta ottenuto il token, questo viene usato da Blazor e in particolare dall'SDK javascript per accedere agli oggetti della risorsa ed eventualmente controllare il report PowerBI per impostare una serie di informazioni, quali filtri, gestione eventi etc.
 1. Richiesta utente per la visualizzazione del report
 2. richiesta dall'applicazione web al backend
